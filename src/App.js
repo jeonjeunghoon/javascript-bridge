@@ -1,15 +1,18 @@
-const GameController = require('./controller/GameController');
+const Game = require('./controller/Game');
 
 class App {
-  #gameController;
+  #game;
 
   constructor() {
-    this.#gameController = new GameController();
+    this.#game = new Game();
   }
 
   play() {
-    this.#gameController.playBridgeGame();
+    this.#game.playGame();
   }
 }
+
+const app = new App();
+app.play();
 
 module.exports = App;

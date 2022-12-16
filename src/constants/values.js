@@ -1,36 +1,29 @@
 const REG_EXP = Object.freeze({
-  ONLY_NUMBERS: /^[0-9]+$/,
+  onlyNumbers: /^[0-9]+$/,
+  onlyAlphabets: /^[a-zA-Z]+$/,
 });
 
-const BRIDGE_GAME = Object.freeze({
-  INPUT_U: 'U',
-  INPUT_D: 'D',
-  UP_BRIDGE: 'upBridge',
-  DOWN_BRIDGE: 'downBridge',
-  CORRECT: 'O',
-  INCORRECT: 'X',
-  EMPTY: ' ',
-  STEP: 1,
-  RESTART: 'R',
-  QUIT: 'Q',
+const SIZE = Object.freeze({
+  min: 3,
+  max: 20,
 });
 
-const GAME_STATE = Object.freeze({
-  ERROR: -1,
-  FAIL_STOP: -1,
-  SUCCESS_STOP: 0,
-  PLAYING: 1,
+const BRIDGE = Object.freeze({
+  downDirection: 0,
+  upDirection: 1,
+  up: 'U',
+  down: 'D',
 });
 
-const PRINTABLE_BRIDGE = Object.freeze({
-  BEGIN: '[ ',
-  END: ' ]',
-  SPACE_LINE: ' | ',
+const MOVE = Object.freeze({
+  step: 1,
+  correct: 'O',
+  incorrect: 'X',
 });
 
 module.exports = {
   REG_EXP,
-  BRIDGE_GAME,
-  GAME_STATE,
-  PRINTABLE_BRIDGE,
+  SIZE,
+  BRIDGE,
+  MOVE,
 };

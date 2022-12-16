@@ -1,17 +1,21 @@
-const Console = require('../utils/Console');
-const { MESSAGE_QUESTION } = require('../constants/messages');
+const console = require('../utils/console');
+const { MESSAGE_QUERY } = require('../constants/messages');
 
 const InputView = {
-  readBridgeSize(initialize) {
-    Console.readLine(MESSAGE_QUESTION.BRIDGE_SIZE, initialize);
+  readBridgeSize(generateBridge) {
+    console.readline(MESSAGE_QUERY.BRIDGE_SIZE, generateBridge);
   },
 
   readMoving(movePlayer) {
-    Console.readLine(MESSAGE_QUESTION.PLAYER_MOVING, movePlayer);
+    console.readline(MESSAGE_QUERY.MOVING, movePlayer);
   },
 
-  readGameCommand(startOrQuit) {
-    Console.readLine(MESSAGE_QUESTION.RESTART_OR_QUIT, startOrQuit);
+  readGameCommand(quarter) {
+    console.readline(MESSAGE_QUERY.GAME_COMMAND, quarter);
+  },
+
+  close() {
+    console.close();
   },
 };
 

@@ -1,80 +1,78 @@
-const { BRIDGE_GAME, GAME_STATE } = require('../constants/values');
-const { MESSAGE_RESULT } = require('../constants/messages');
-const DataHandler = require('../utils/DataHandler');
+const validator = require('../utils/validator');
+const OutputView = require('../views/OutputView');
+const { MOVE } = require('../constants/values');
 
 class BridgeGame {
   #data = {
-    bridge: [],
-    tryCount: 0,
-    gameProgress: {},
+    beforeMoveBridge: [],
+    afterMoveBridge: [],
+    startPoint: 0,
+    tryCount: 1,
   };
 
   constructor(bridge) {
-    this.#data.bridge = bridge;
-    this.#data.tryCount = 1;
-    this.#resetGameProgress();
+    this.#data.beforeMoveBridge = bridge;
   }
 
-  #resetGameProgress() {
-    this.#data.gameProgress = {
-      step: 0,
-      upBridge: [],
-      downBridge: [],
-      state: GAME_STATE.PLAYING,
-    };
+  checkMoving(moving) {
+    try {
+      this.#validate(moving);
+    } catch (error) {
+      OutputView.printError(error);
+      return false;
+    }
+
+    return true;
   }
 
-  move(direction) {
-    const selected = this.#data.gameProgress[DataHandler.getSelectedIndex(direction)];
-    const unSelected = this.#data.gameProgress[DataHandler.getUnselectedIndex(direction)];
-
-    this.#setResultOfSelect({ direction, selected, unSelected });
-    this.#setGameState({ selected, index: selected.length - 1 });
-
-    return {
-      upBridge: this.#data.gameProgress.upBridge,
-      downBridge: this.#data.gameProgress.downBridge,
-    };
+  #validate(moving) {
+    validator.checkTruthy(moving);
+    validator.checkType(moving, 'string');
+    validator.checkMoving(moving);
   }
 
-  #setResultOfSelect({ direction, selected, unSelected }) {
-    if (direction === this.#data.bridge[this.#data.gameProgress.step]) {
-      selected.push(BRIDGE_GAME.CORRECT);
+  move(moving) {
+    if (this.#data.beforeMoveBridge[this.#data.startPoint] === moving) {
+      this.#data.afterMoveBridge.push(MOVE.correct);
     } else {
-      selected.push(BRIDGE_GAME.INCORRECT);
+      this.#data.afterMoveBridge.push(MOVE.incorrect);
     }
-    unSelected.push(BRIDGE_GAME.EMPTY);
+    this.#data.startPoint += MOVE.step;
 
-    this.#data.gameProgress.step += BRIDGE_GAME.STEP;
-  }
-
-  #setGameState({ selected, index }) {
-    if (selected[index] === BRIDGE_GAME.INCORRECT) {
-      this.#data.gameProgress.state = GAME_STATE.FAIL_STOP;
-    }
-
-    if (selected[index] === BRIDGE_GAME.CORRECT && selected.length === this.#data.bridge.length) {
-      this.#data.gameProgress.state = GAME_STATE.SUCCESS_STOP;
-    }
+    return this.#data.afterMoveBridge;
   }
 
   checkState() {
-    return this.#data.gameProgress.state;
+    if (this.#data.afterMoveBridge.lastIndexOf(MOVE.incorrect) >= 0) {
+      return true;
+    }
+    if (this.#data.beforeMoveBridge.length === this.#data.startPoint) {
+      return true;
+    }
+
+    return false;
   }
 
-  retry(start) {
+  checkSuccess() {
+    return (
+      !this.#data.afterMoveBridge.includes(MOVE.incorrect) &&
+      this.#data.beforeMoveBridge.length === this.#data.startPoint
+    );
+  }
+
+  retry() {
+    this.#data.afterMoveBridge = [];
+    this.#data.startPoint = 0;
     this.#data.tryCount += 1;
-    this.#resetGameProgress();
-    start();
   }
 
   getResult() {
-    const successOrFailure =
-      this.checkState() === GAME_STATE.SUCCESS_STOP
-        ? MESSAGE_RESULT.SUCCESS
-        : MESSAGE_RESULT.FAILURE;
-
-    return { successOrFailure, tryCount: this.#data.tryCount };
+    return {
+      result: this.#data.afterMoveBridge.includes(MOVE.incorrect)
+        ? '실패'
+        : '성공',
+      tryCount: this.#data.tryCount,
+    };
   }
 }
 

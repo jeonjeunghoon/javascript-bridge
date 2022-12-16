@@ -1,12 +1,12 @@
 const MissionUtils = require('@woowacourse/mission-utils');
 
-const Console = {
-  readLine(query, callback) {
-    MissionUtils.Console.readLine(query, callback);
-  },
-
+const console = {
   print(message) {
     MissionUtils.Console.print(message);
+  },
+
+  readline(query, callback) {
+    MissionUtils.Console.readLine(query, callback);
   },
 
   close() {
@@ -14,4 +14,4 @@ const Console = {
   },
 };
 
-module.exports = Console;
+module.exports = console;

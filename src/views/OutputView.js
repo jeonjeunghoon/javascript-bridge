@@ -1,20 +1,24 @@
-const Console = require('../utils/Console');
-const { MESSAGE_GAME, MESSAGE_RESULT } = require('../constants/messages');
+const console = require('../utils/console');
+const { MESSAGE_SYSTEM } = require('../constants/messages');
+const { MOVE } = require('../constants/values');
 
 const OutputView = {
-  printStartMessage() {
-    Console.print(MESSAGE_GAME.START);
+  printStartGame() {
+    console.print(MESSAGE_SYSTEM.START_GAME);
+  },
+
+  printError(error) {
+    console.print(error);
   },
 
   printMap(map) {
-    Console.print(map);
+    console.print(map);
   },
-
-  printResult(result, { successOrFailure, tryCount }) {
-    Console.print(`${MESSAGE_RESULT.HEAD}`);
-    Console.print(result);
-    Console.print(`${MESSAGE_RESULT.SUCCESS_OR_FAILURE} ${successOrFailure}`);
-    Console.print(`${MESSAGE_RESULT.TRY_COUNT} ${tryCount}`);
+  printResult(map, { result, tryCount }) {
+    console.print('최종 게임 결과');
+    console.print(map);
+    console.print(`게임 성공 여부: ${result}`);
+    console.print(`총 시도한 횟수: ${tryCount}`);
   },
 };
 
